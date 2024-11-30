@@ -1,0 +1,10 @@
+anthropic>=0.7.0
+twitter-api-v2>=2.12.0
+web3>=6.0.0
+python-dotenv>=1.0.0
+fastapi>=0.68.0
+uvicorn>=0.15.0
+pydantic>=2.0.0
+python-jose[cryptography]>=3.3.0
+passlib[bcrypt]>=1.7.4
+aiohttp>=3.8.0
