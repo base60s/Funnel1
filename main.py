@@ -1,9 +1,11 @@
 import uvicorn
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Depends, Security
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from pydantic import BaseModel
 from agent.funnel_agent import FunnelAgent
 from dotenv import load_dotenv
 import logging
+import os
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -19,6 +21,10 @@ app = FastAPI(
     version="1.0.0"
 )
 
+# Security
+security = HTTPBearer()
+API_KEY = os.getenv("API_KEY")
+
 # Initialize agent
 agent = FunnelAgent()
 
@@ -29,8 +35,19 @@ class ChatResponse(BaseModel):
     response: str
     actions: list
 
+async def verify_api_key(credentials: HTTPAuthorizationCredentials = Security(security)):
+    if credentials.credentials != API_KEY:
+        raise HTTPException(
+            status_code=401,
+            detail="Invalid API key"
+        )
+    return credentials.credentials
+
 @app.post("/chat", response_model=ChatResponse)
-async def chat(request: ChatRequest):
+async def chat(
+    request: ChatRequest,
+    api_key: str = Depends(verify_api_key)
+):
     """
     Process a chat message and execute any required actions
     """
