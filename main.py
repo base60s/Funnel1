@@ -48,9 +48,6 @@ async def chat(
     request: ChatRequest,
     api_key: str = Depends(verify_api_key)
 ):
-    """
-    Process a chat message and execute any required actions
-    """
     try:
         logger.info(f"Received message: {request.message}")
         response, actions = await agent.process_message(request.message)
@@ -62,9 +59,6 @@ async def chat(
 
 @app.get("/health")
 async def health_check():
-    """
-    Health check endpoint
-    """
     return {"status": "healthy"}
 
 if __name__ == "__main__":
